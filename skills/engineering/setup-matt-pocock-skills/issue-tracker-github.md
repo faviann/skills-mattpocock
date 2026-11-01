@@ -14,7 +14,7 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 - **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
 - **Close**: post the explanation with `gh issue comment <number> --body "..."`, then `gh issue close <number>`. On an already-closed issue, `gh issue close --comment` drops the comment and still exits 0.
 
-Infer the repo from `git remote -v`, preferring `origin` when it exists unless the user explicitly selected another repository. Before any GitHub mutation, set that target with `gh repo set-default origin` (or pass the selected repository instead), verify it with `gh repo set-default --view`, and use the verified output wherever a command requires `<owner>/<repo>`.
+Infer the repo from `git remote -v`; `gh` does this automatically when run inside a clone.
 
 File issues only into the user's own repo. Never file into `mattpocock/skills` (the repo these skills come from) unless the user owns it. In a fork, `gh` can default to the upstream parent, so before the first `gh issue create` of a session, check the target with `gh repo view --json nameWithOwner` and confirm it with the user if it is not their repo.
 
