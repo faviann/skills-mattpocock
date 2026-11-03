@@ -102,14 +102,14 @@ Ruling something out of scope is a scoping act, not a step on the route. When a 
 
 ## Domain edits live on the ticket
 
-Each ticket resolves in a fresh session, and `domain-modeling` edits `GLOSSARY.md` and ADRs as it goes. Those file edits don't reach the next session, and parallel sessions would pick the same ADR number. So the **ticket carries the text**, and the files are scratch until the map lands them.
+A session's `GLOSSARY.md` and ADR edits never reach the next session, and parallel sessions pick the same ADR number. So the **ticket carries the text** and the files are scratch until the map **lands** them.
 
-- **Close with the text.** When a ticket ran `domain-modeling`, its resolution comment holds the final text of every glossary entry and ADR it wrote. Give each ADR a title and leave its number as TBD. Add a `Touches terms:` line naming the terms it defined or changed.
-- **Read before grilling.** Before a ticket runs `domain-modeling`, read the resolution comments of the resolved tickets linked from Decisions so far. Where they disagree with `GLOSSARY.md` on disk, the comments win. Don't commit the session's file edits.
-- **Parallel tickets can disagree.** Two open tickets may define one term differently, and neither sees the other. Never settle it silently: the landing ticket does.
+- **Close with the text.** When a ticket ran `domain-modeling`, its resolution comment holds the final text of every glossary entry and ADR it wrote. Title each ADR and leave its number TBD. Add a `Touches terms:` line naming every term it defined or changed.
+- **Read before grilling.** Before a ticket runs `domain-modeling`, read the resolution comment of every resolved ticket linked from Decisions so far. Where a comment and the `GLOSSARY.md` on disk disagree, the comment wins.
+- **Parallel tickets can disagree.** Two open tickets may define one term differently, and neither sees the other. The landing ticket settles it.
 - **Land once.** When the last ticket closes and the way is clear, add one final `grilling` ticket, **Land the domain model**, if any resolution carried glossary or ADR text. It replays those comments in close order, merges them into `GLOSSARY.md`, settles conflicting definitions with the human, numbers the ADRs by scanning the ADR directory once, and commits everything in one change that merges together with the spec.
 
-The same applies to charting: text written while naming the destination goes in the map's **Notes**.
+Charting follows the same rule, so text written while naming the destination goes in the map's **Notes**.
 
 ## Invocation
 
