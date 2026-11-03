@@ -54,6 +54,10 @@ Every ticket carries a `wayfinder:<type>` label. Each ticket is either **[HITL](
 
 Research is the only exception to *one ticket per session*.
 
+## The map branch
+
+Grilling tickets run [domain-modeling](https://aihero.dev/skills-domain-modeling), which edits `GLOSSARY.md` and ADRs, and every ticket runs in a fresh session. So a map gets one branch, `wayfinder/<map-number>`, and one worktree that every session on that map reuses. Each session commits its glossary and ADR changes there before it ends, so the next session grills against an up-to-date glossary. Sessions stage only their own files and pull with rebase before pushing, because parallel sessions share the branch. Research tickets keep their throwaway `research/<name>` branches, which never merge. The map branch merges together with the spec when the map closes.
+
 ## Common questions
 
 **How is this different from `/grill-with-docs`? Which should I start with?**
@@ -92,6 +96,7 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 - Every open ticket reads as a question. Any ticket that reads "build the X" is either mis-typed or belongs downstream of the map.
 - You can look at your tracker and see which tickets are takeable without opening the map, because native blocking shows the frontier.
 - A session resolves one ticket, posts the answer as a resolution comment, closes it, and adds one line to the map's *Decisions so far*. Then it stops.
+- The map has a `wayfinder/<map-number>` branch, and each finished ticket leaves its glossary and ADR changes committed there.
 - **Not yet specified** shrinks over time. When fog graduates into a ticket, it leaves that section and does not appear in both places.
 - When the opening breadth-first grill finds no fog at all, the skill stops and tells you the effort is small enough to skip the map.
 - The session that finishes the map points you toward a spec, not a pull request.
