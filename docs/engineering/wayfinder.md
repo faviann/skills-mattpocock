@@ -54,9 +54,11 @@ Every ticket carries a `wayfinder:<type>` label. Each ticket is either **[HITL](
 
 Research is the only exception to *one ticket per session*.
 
-## The map branch
+## Where glossary and ADR edits go
 
-Grilling tickets run [domain-modeling](https://aihero.dev/skills-domain-modeling), which edits `GLOSSARY.md` and ADRs, and every ticket runs in a fresh session. So a map gets one branch, `wayfinder/<map-number>`, and one worktree that every session on that map reuses. Each session commits its glossary and ADR changes there before it ends, so the next session grills against an up-to-date glossary. Sessions stage only their own files and pull with rebase before pushing, because parallel sessions share the branch. Research tickets keep their throwaway `research/<name>` branches, which never merge. The map branch merges together with the spec when the map closes.
+Grilling tickets run [domain-modeling](https://aihero.dev/skills-domain-modeling), which edits `GLOSSARY.md` and ADRs, and every ticket runs in a fresh session. Files left in a session's working tree never reach the next one, and parallel sessions pick the same ADR number. So the ticket carries the text. Its resolution comment holds the final glossary entries and ADR bodies, with ADR numbers left as TBD, plus a `Touches terms:` line. The next grilling session reads those comments before it starts, and they win over a stale `GLOSSARY.md`.
+
+When the way is clear, a final **Land the domain model** ticket replays the comments, merges the terms, settles any conflicting definitions with you, numbers the ADRs once, and commits everything in one change that merges with the spec. Two parallel tickets can define one term differently without seeing each other, and this ticket is where you settle it.
 
 ## Common questions
 
@@ -96,7 +98,7 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 - Every open ticket reads as a question. Any ticket that reads "build the X" is either mis-typed or belongs downstream of the map.
 - You can look at your tracker and see which tickets are takeable without opening the map, because native blocking shows the frontier.
 - A session resolves one ticket, posts the answer as a resolution comment, closes it, and adds one line to the map's *Decisions so far*. Then it stops.
-- The map has a `wayfinder/<map-number>` branch, and each finished ticket leaves its glossary and ADR changes committed there.
+- A grilling ticket's resolution comment contains the final text of the glossary entries and ADRs it wrote, and a later session reads them before it grills.
 - **Not yet specified** shrinks over time. When fog graduates into a ticket, it leaves that section and does not appear in both places.
 - When the opening breadth-first grill finds no fog at all, the skill stops and tells you the effort is small enough to skip the map.
 - The session that finishes the map points you toward a spec, not a pull request.

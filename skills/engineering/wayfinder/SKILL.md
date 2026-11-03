@@ -100,15 +100,16 @@ Out-of-scope work never graduates (the frontier stops at the destination), so it
 
 Ruling something out of scope is a scoping act, not a step on the route. When a ticket that already exists turns out to sit past the destination (mis-scoped in while charting, or exposed by a resolution), **close it** (a closed ticket is unambiguously off the frontier) and leave one line in the **Out of scope** section: the gist plus why it's out of scope, linking the closed ticket. It stays out of **Decisions so far**, which records the route actually walked; a scope boundary isn't a step on it.
 
-## The map branch
+## Domain edits live on the ticket
 
-Each ticket resolves in a fresh session, and `domain-modeling` edits `GLOSSARY.md` and ADRs as it goes. Those edits need a home the next session starts from, or it grills against a stale glossary.
+Each ticket resolves in a fresh session, and `domain-modeling` edits `GLOSSARY.md` and ADRs as it goes. Those file edits don't reach the next session, and parallel sessions would pick the same ADR number. So the **ticket carries the text**, and the files are scratch until the map lands them.
 
-A map gets one branch, `wayfinder/<map-number>`, and one worktree for it. Every session on the map works there, instead of branching from the default branch. Reuse the map's worktree if one exists; otherwise create it from the branch.
+- **Close with the text.** When a ticket ran `domain-modeling`, its resolution comment holds the final text of every glossary entry and ADR it wrote. Give each ADR a title and leave its number as TBD. Add a `Touches terms:` line naming the terms it defined or changed.
+- **Read before grilling.** Before a ticket runs `domain-modeling`, read the resolution comments of the resolved tickets linked from Decisions so far. Where they disagree with `GLOSSARY.md` on disk, the comments win. Don't commit the session's file edits.
+- **Parallel tickets can disagree.** Two open tickets may define one term differently, and neither sees the other. Never settle it silently: the landing ticket does.
+- **Land once.** When the last ticket closes and the way is clear, add one final `grilling` ticket, **Land the domain model**, if any resolution carried glossary or ADR text. It replays those comments in close order, merges them into `GLOSSARY.md`, settles conflicting definitions with the human, numbers the ADRs by scanning the ADR directory once, and commits everything in one change that merges together with the spec.
 
-- **Commit before ending.** Commit the `GLOSSARY.md` and ADR changes the session made, then push. Stage only the files you changed, and pull with rebase before pushing: other sessions commit to this branch too. One branch also means one ADR number sequence, so parallel sessions don't claim the same number.
-- **Research stays off it.** Research tickets keep their throwaway `research/<name>` branch, which is never merged, so their findings never reach the map branch.
-- **It merges with the spec.** The map branch merges together with the spec when the map closes, not before.
+The same applies to charting: text written while naming the destination goes in the map's **Notes**.
 
 ## Invocation
 
@@ -120,7 +121,7 @@ User invokes with a loose idea.
 
 1. **Name the destination.** Call the Skill tool twice, for "grilling" and "domain-modeling", to pin down what this map is finding its way to: the spec, decision, or change. The destination fixes the scope, so it's settled first.
 2. **Map the frontier.** Grill again, **breadth-first** this time: fan out across the whole space rather than deep on any one thread, surfacing the open decisions and the first steps takeable now. **If this surfaces no fog** (the way to the destination is already clear, the whole journey small enough for one session), you don't need a map. Stop and ask the user how they'd like to proceed.
-3. **Create the map** (label `wayfinder:map`): Destination and Notes filled in, Decisions-so-far empty, the fog sketched into **Not yet specified**. Then create and push the [map branch](#the-map-branch) from the default branch, named for the new map's number, and commit any `GLOSSARY.md` or ADR edits from steps 1 and 2 to it.
+3. **Create the map** (label `wayfinder:map`): Destination and Notes filled in, Decisions-so-far empty, the fog sketched into **Not yet specified**.
 4. **Create the tickets you can specify now** as child issues of the map, then wire blocking edges in a **second pass** (issues need ids before they can reference each other). Write cross-references in that pass too, with real ids: a placeholder `#<n>` auto-links to an unrelated issue. Wiring sorts them into the frontier and the blocked; everything you can't yet specify stays in the fog: the **Not yet specified** section.
 5. **Fire the research subagents.** For each `research` ticket you just created, spin up a subagent with a fresh context window that calls the Skill tool with "research" to resolve it in parallel, capturing its findings on a throwaway `research/<name>` branch with a context pointer from the ticket. Push the branch but open no PR: it is never merged.
 6. Stop: charting is one session's work; it hand-resolves nothing.
@@ -130,9 +131,9 @@ User invokes with a loose idea.
 User invokes with a map (URL or number). A ticket is **optional**: without one, you pick the next decision, not the user.
 
 1. Load the **map**: the low-res view, not every ticket body.
-2. Choose the ticket. If the user named one, use it. Otherwise take the first frontier ticket in order. **Claim it**: assign it to yourself before any work. Then switch to the [map branch](#the-map-branch) worktree, so you start from the glossary and ADRs earlier sessions left.
-3. Resolve it as the type its `wayfinder:<type>` label names (see [Ticket Types](#ticket-types)). Read the label, not just the body: the body never states the type. **Zoom as needed**: fetch the full body of any related or closed ticket on demand; call the Skill tool for whichever skills the `## Notes` block names. If in doubt, call the Skill tool twice, for "grilling" and "domain-modeling".
-4. Record the resolution: post the answer as a **resolution comment**, **close** the issue, and **append a context pointer** to the map's Decisions-so-far. Commit and push the session's glossary and ADR changes to the map branch.
+2. Choose the ticket. If the user named one, use it. Otherwise take the first frontier ticket in order. **Claim it**: assign it to yourself before any work.
+3. Resolve it as the type its `wayfinder:<type>` label names (see [Ticket Types](#ticket-types)). Read the label, not just the body: the body never states the type. **Zoom as needed**: fetch the full body of any related or closed ticket on demand; call the Skill tool for whichever skills the `## Notes` block names. If in doubt, call the Skill tool twice, for "grilling" and "domain-modeling". When the ticket runs `domain-modeling`, follow [Domain edits live on the ticket](#domain-edits-live-on-the-ticket).
+4. Record the resolution: post the answer as a **resolution comment** (carrying any glossary and ADR text), **close** the issue, and **append a context pointer** to the map's Decisions-so-far.
 5. Add newly-surfaced tickets (create-then-wire); graduate any fog the answer has made specifiable, clearing each graduated patch from **Not yet specified** so it lives only as its new ticket. If the answer reveals that a ticket (this one or another) sits beyond the destination, **rule it out of scope** rather than resolving it on the route. If the decision invalidates other parts of the map, update or delete those tickets.
 
 The user may run unblocked tickets in parallel, so expect other sessions to be editing the tracker concurrently.
