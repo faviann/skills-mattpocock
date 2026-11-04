@@ -54,6 +54,10 @@ Every ticket carries a `wayfinder:<type>` label. Each ticket is either **[HITL](
 
 Research is the only exception to *one ticket per session*.
 
+## The map branch
+
+Grilling tickets run [domain-modeling](https://aihero.dev/skills-domain-modeling), which edits `GLOSSARY.md` and ADRs, and every ticket runs in a fresh session. So each map keeps those edits on one git branch, `wayfinder/<slug>`, named when you chart the map and recorded in its Notes. A grilling session runs from that branch's worktree, and it commits and pushes its glossary and ADR changes before it closes the ticket, so the next session grills against the current glossary. Only grilling tickets edit the glossary, and they run one at a time, so the branch has one writer. When the way is clear, the branch is yours to open as a pull request and merge, and you run [to-spec](https://aihero.dev/skills-to-spec) on the map from an up-to-date main, so the spec reads the final glossary. On a local-markdown tracker there is no map branch: the map lives in one checkout, and every session works there.
+
 ## Common questions
 
 **How is this different from `/grill-with-docs`? Which should I start with?**
@@ -72,7 +76,7 @@ This is the most-reported failure with this skill, and a real gap in the skill c
 This question is verbatim from a user report, and others report the same outcome. By default, wayfinder plans comprehensively. When later tickets rest on assumptions that earlier tickets invalidate, the map falls into the waterfall trap that critics accuse the skill of. Two things help. First, scope the map to a bounded destination, not to the whole product. Users report that maps scoped to one defined epic behave better than a sprawling "implement V1". The goal is to ship small increments, not to plan something very big. Second, [prototype](https://www.aihero.dev/ai-coding-dictionary/prototyping) aggressively. The route stays current because cheap concrete artifacts expose uncertainty before implementation depends on it. Wayfinder is "prototypemaxxing", not "planmaxxing".
 
 **Can I work several tickets in parallel?**
-The frontier shows you which tickets you can take, and blocking edges make parallel work safe on paper. In practice, one ticket at a time is the safer default. If you work two grilling tickets at once, one session can ask you a question you just answered in the other, because the sessions share no [context](https://www.aihero.dev/ai-coding-dictionary/context). Prototype tickets have a known gap too. One user reported an agent that built three UI variations, chose one itself, and closed the ticket. That choice is yours, and the skill does not yet say so clearly enough. If you do run tickets in parallel, review the dependency graph yourself first.
+The frontier shows you which tickets you can take, and blocking edges make parallel work safe on paper. In practice, one ticket at a time is the safer default. Grilling tickets always run one at a time: a session that would start a second one stops and tells you, because grilling tickets share the map branch and each builds on the glossary the last one committed. Prototype tickets have a known gap too. One user reported an agent that built three UI variations, chose one itself, and closed the ticket. That choice is yours, and the skill does not yet say so clearly enough. If you do run tickets in parallel, review the dependency graph yourself first.
 
 **Do I have to use GitHub Issues?**
 No. Any issue tracker works. GitHub has the best support, because its native sub-issues and blocking relationships make the frontier visible without opening the map. People also use GitLab, Linear, Jira and local markdown. There are two caveats. On a tracker with no native blocking, wayfinder infers the dependency graph from text, and you must correct it by hand. Local markdown puts the artifacts in your repo, which is not recommended, because material stored in the repo tends to persist by accident. Open-source maintainers hit the opposite problem (public trackers fill up with agent-generated planning tickets) and often choose local markdown anyway.
@@ -92,9 +96,10 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 - Every open ticket reads as a question. Any ticket that reads "build the X" is either mis-typed or belongs downstream of the map.
 - You can look at your tracker and see which tickets are takeable without opening the map, because native blocking shows the frontier.
 - A session resolves one ticket, posts the answer as a resolution comment, closes it, and adds one line to the map's *Decisions so far*. Then it stops.
+- Each closed grilling ticket that changed the glossary or an ADR has a matching commit on the map branch, and the next grilling session starts from it.
 - **Not yet specified** shrinks over time. When fog graduates into a ticket, it leaves that section and does not appear in both places.
 - When the opening breadth-first grill finds no fog at all, the skill stops and tells you the effort is small enough to skip the map.
-- The session that finishes the map points you toward a spec, not a pull request.
+- The session that finishes the map hands you the map branch to merge and points you toward a spec, not toward implementation.
 
 ## Where it fits
 
